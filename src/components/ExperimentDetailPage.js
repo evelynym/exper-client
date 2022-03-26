@@ -3,11 +3,13 @@ import { useParams } from 'react-router-dom';
 import ShowQuestionItems from './ShowQuestionItems';
 import {fetchExperimentByName} from '../api/index.js';
 import { Button } from '@mui/material';
+import { submitAns } from '../api/index.js';
 
 export default function ExperimentDetailPage() {
 
   const {name} = useParams();
   const [experiment, setExperiment] = useState({});
+  const [answers, setAnswers] = useState([]);
 
   const getData = async (name) => {
     const data = await fetchExperimentByName(name);
@@ -21,6 +23,35 @@ export default function ExperimentDetailPage() {
     getData(name);
   },[]);
 
+  const handleSubmitAns = () => {
+    const ansToSubmit = {
+      experimentName: experiment.experimentName,
+      answers: answers
+    }
+    submitAns(ansToSubmit);
+  }
+
+  const handleAnswerChange = (questionAnswerFromChild,questionName) => {
+
+    if (answers.filter (ans => ans.question === questionName).length > 0 ) {
+      answers.map((a) => (
+        a.question === questionName ? a.answer = questionAnswerFromChild : a
+      ));
+    }
+    else {
+      
+      const receivedAns = 
+      {
+        question:questionName,
+        answer:questionAnswerFromChild
+      };
+      setAnswers([...answers,receivedAns])
+    }
+  
+  }
+
+
+
   return (
     <div>
       {Object.keys(experiment).length !== 0 &&
@@ -31,13 +62,14 @@ export default function ExperimentDetailPage() {
             <div key={index}>
               <ShowQuestionItems 
                 question={question}
+                onChange = {(answer) => handleAnswerChange(answer,question.questionName)}
               />
-
+              
               
             </div>
           ))}
-
-      <Button variant="outlined">Submit</Button>
+      {  console.log("answers",answers)}
+      <Button variant="outlined" onClick={() => handleSubmitAns()}>Submit</Button>
       <Button variant="outlined">Back</Button>
 
       </div>

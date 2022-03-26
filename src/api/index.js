@@ -13,3 +13,7 @@ export const createExperiment = (newPost) => {
 export const fetchExperimentByName = (name) => {
     return axios.get(`${url}/fetchExperimentByName/${name}`);
 }
+
+export const submitAns = (newAns) => {
+    axios.post(`${url}/submitAns`,newAns)
+}
