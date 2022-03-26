@@ -1,10 +1,13 @@
 import {React,useState} from 'react'
 import TextField from '@material-ui/core/TextField';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography} from '@material-ui/core';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {Alert,Snackbar} from '@mui/material';
 import {createExperiment} from "../api/index.js"
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CreateExperiment() {
     const defaultType = "singleLine";
@@ -14,7 +17,9 @@ export default function CreateExperiment() {
          questionOptions: ["",""]}
     ]);
 
-    const [experName, setExperName] = useState ("")
+    const [experName, setExperName] = useState ("");
+    const [showAlert, setShowAlert] = useState({isOpen: false, message: "",type:""});
+    const navigate = useNavigate();
 
     const handleRadioChange = (e,index) => {
         let list = [...questionList];
@@ -32,7 +37,7 @@ export default function CreateExperiment() {
     }
 
     const handleAddQuestion = () => {
-        setQuestionList([...questionList, {questionName: "",questionType: defaultType, questionOptions: [""]}]);
+        setQuestionList([...questionList, {questionName: "",questionType: defaultType, questionOptions: ["",""]}]);
     }
 
     const handleQuestionNameChange = (event,index) => {
@@ -62,12 +67,38 @@ export default function CreateExperiment() {
         console.log(questionList)
     }
 
-    const handleSubmit = () => {
-        const experiment = {
-            experimentName:experName,
-            questions: questionList
-        };
-        createExperiment(experiment);
+    const handleSubmit = async () => {
+        if (experName === "") {
+            setShowAlert({isOpen:true,type:"warning",message:"Experiment name is mandatory!"});
+        }
+        else if (questionList.filter(question => 
+            question.questionName === "" || 
+            (question.questionType === "MCQ" && question.questionOptions.length === 0)).length > 0){
+                setShowAlert({isOpen:true,type:"warning",message:"All fields are mandatory!"});
+        }
+        else{
+            const experiment = {
+                experimentName:experName,
+                questions: questionList
+            };
+    
+            const data = await createExperiment(experiment);
+            if(data.status === 201) {
+                setShowAlert({isOpen: true, message: "Create successfully",type:"success"})
+                navigate('/');
+            }
+        }
+
+      
+
+    }
+
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setShowAlert({isOpen:false,type:"",message:""});
     }
 
     const hanldeExperNameChange = (event) => {
@@ -76,7 +107,11 @@ export default function CreateExperiment() {
 
   return (
     <div>
-        
+        <Snackbar open= {showAlert.isOpen} autoHideDuration={3000} onClose={handleAlertClose}>
+          <Alert severity={showAlert.type} sx={{ width: '100%' }} onClose={handleAlertClose}>
+            {showAlert.message}
+          </Alert>
+        </Snackbar>
         <Typography variant="h4">Experiment Name:</Typography>
         <TextField id="outlined-experienmentName" label="Experiment Name" variant="outlined" value={experName} onChange ={(event) => hanldeExperNameChange(event)}/>
         <Button variant="contained" onClick={handleAddQuestion}> Add Question</Button>
@@ -102,8 +137,6 @@ export default function CreateExperiment() {
                         ))}
                     </div>}
                     <Button onClick={() => handleRemoveQuestion(index)}>Remove</Button>
-                    {(questionList.length - 1) === index &&
-                    <Button onClick={handleAddQuestion}>Add Question</Button>}
                 </div>
             ))}
         </div>

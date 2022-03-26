@@ -2,7 +2,7 @@ import React, { useEffect,useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ShowQuestionItems from './ShowQuestionItems';
 import {fetchExperimentByName} from '../api/index.js';
-import { Button,Alert } from '@mui/material';
+import { Button,Alert, Snackbar} from '@mui/material';
 import { submitAns } from '../api/index.js';
 import ThankYouPage from './ThankYouPage.js';
 
@@ -12,7 +12,7 @@ export default function ExperimentDetailPage() {
   const [experiment, setExperiment] = useState({});
   const [answers, setAnswers] = useState([]);
   const [showThankYou, setShowThankYou] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState({isOpen: false, message: "",type:""});
 
   const getData = async (name) => {
     const data = await fetchExperimentByName(name);
@@ -22,7 +22,6 @@ export default function ExperimentDetailPage() {
   }
 
   useEffect(() => {
-    console.log('name',name)
     getData(name);
   },[]);
 
@@ -30,11 +29,13 @@ export default function ExperimentDetailPage() {
 
     // check if all questions are answered
 
+    console.log(answers,experiment.questions.length)
     if (answers.length !== experiment.questions.length){
-      setShowAlert(true);
+      
+      setShowAlert({isOpen: true, message: "All questions are mandatory",type:"warning"})
     }
     else {
-      setShowAlert(false);
+      setShowAlert({isOpen:false,message:"",type:""});
       setShowThankYou(true);
       const ansToSubmit = {
         experimentName: experiment.experimentName,
@@ -42,23 +43,20 @@ export default function ExperimentDetailPage() {
       }
       submitAns(ansToSubmit);
     }
-    
 
-    // if so, show thank you page and submit answer
-    
   }
 
-  const handleAnswerChange = (questionAnswerFromChild,questionName) => {
+  const handleAnswerChange = (questionAnswerFromChild,questionName,questionId) => {
 
-    if (answers.filter (ans => ans.question === questionName).length > 0 ) {
+    if (answers.filter (ans => ans.questionId === questionId).length > 0 ) {
       answers.map((a) => (
-        a.question === questionName ? a.answer = questionAnswerFromChild : a
+        a.questionId === questionId ? a.answer = questionAnswerFromChild : a
       ));
     }
     else {
-      
       const receivedAns = 
       {
+        questionId: questionId,
         question:questionName,
         answer:questionAnswerFromChild
       };
@@ -67,12 +65,24 @@ export default function ExperimentDetailPage() {
   
   }
 
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setShowAlert({isOpen:false,type:"",message:""});
+}
 
 
   return (
     <>
     {showThankYou ? ( <ThankYouPage></ThankYouPage>) :
     (<div>
+      <Snackbar open= {showAlert.isOpen} autoHideDuration={3000} onClose={handleAlertClose}>
+          <Alert severity={showAlert.type} sx={{ width: '100%' }} onClose={handleAlertClose}>
+            {showAlert.message}
+          </Alert>
+        </Snackbar>
       {Object.keys(experiment).length !== 0 &&
       <div>
       <h1>{experiment.experimentName}</h1>
@@ -81,14 +91,13 @@ export default function ExperimentDetailPage() {
             <div key={index}>
               <ShowQuestionItems 
                 question={question}
-                onChange = {(answer) => handleAnswerChange(answer,question.questionName)}
+                onChange = {(answer) => handleAnswerChange(answer,question.questionName,question._id)}
               />
               
               
             </div>
           ))}
-      {showAlert && 
-        <Alert variant="filled" severity="error">This is an error alert — check it out!</Alert>}
+
       
       <Button variant="outlined" onClick={() => handleSubmitAns()}>Submit</Button>
       <Button variant="outlined">Back</Button>
