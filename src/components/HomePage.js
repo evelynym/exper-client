@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, Button} from '@mui/material'
-import {fetchExperiments} from "../api/index.js"
+import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Paper, Button,Alert,Snackbar} from '@mui/material'
+import {fetchExperiments,deleteExperimentById} from "../api/index.js"
 
 export default function HomePage() {
 
@@ -10,6 +10,7 @@ export default function HomePage() {
     const handleAddBtn = () => {
         navigate('/createNewExperient')
     }
+    const [showAlert, setShowAlert] = useState({isOpen: false, message: "",type:""});
     const getData = async  () => {
       const data = await fetchExperiments();
       if (data.status === 200){
@@ -20,12 +21,40 @@ export default function HomePage() {
       getData();
     },[])
 
-    const handleViemBtn = (name) => {
+    const handleClickViewBtn = (name) => {
       navigate(`/experimentDetailPage/${name}`);
+    }
+
+    const handleDeleteBtn = async (_id) => {
+      const data = await deleteExperimentById(_id);
+      if(data.status === 200) {
+        setShowAlert({isOpen: true, message: "Delete successfully",type:"success"})
+        // alert("Your file is being uploaded!")
+        getData();
+        
+      }
+      else if (data.status === 409) {
+        <Alert variant="filled" severity="error">
+          This is an error alert — check it out!
+        </Alert>
+      }
+    }
+
+    const handleAlertClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setShowAlert({isOpen:false,type:"",message:""});
     }
 
   return (
     <div>
+        <Snackbar open= {showAlert.isOpen} autoHideDuration={3000} onClose={handleAlertClose}>
+          <Alert severity={showAlert.type} sx={{ width: '100%' }} onClose={handleAlertClose}>
+            {showAlert.message}
+          </Alert>
+        </Snackbar>
         <h3>HomePage</h3>
         {console.log(experimentList)}
         <button onClick={handleAddBtn}>Add</button>
@@ -52,8 +81,8 @@ export default function HomePage() {
               <TableCell align="right">{item.experimentName}</TableCell>
               <TableCell>
                   <Button variant="outlined">Edit</Button>
-                  <Button variant="outlined">Delete</Button>
-                  <Button variant="outlined" onClick={()=>handleViemBtn(item.experimentName)}>view</Button>
+                  <Button variant="outlined" onClick={() => handleDeleteBtn(item._id)}>Delete</Button>
+                  <Button variant="outlined" onClick={()=>handleClickViewBtn(item.experimentName)}>view</Button>
               </TableCell>
             </TableRow>
           ))}
