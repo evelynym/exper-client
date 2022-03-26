@@ -21,6 +21,10 @@ export default function HomePage() {
       getData();
     },[])
 
+    const hanleEditBtn = (name) => {
+      navigate(`/editExperiment/${name}`);
+    }
+
     const handleClickViewBtn = (name) => {
       navigate(`/experimentDetailPage/${name}`);
     }
@@ -80,9 +84,9 @@ export default function HomePage() {
               <TableCell  align="right">{index}</TableCell>
               <TableCell align="right">{item.experimentName}</TableCell>
               <TableCell>
-                  <Button variant="outlined">Edit</Button>
+                  <Button variant="outlined" onClick={() => hanleEditBtn(item.experimentName)}>Edit</Button>
                   <Button variant="outlined" onClick={() => handleDeleteBtn(item._id)}>Delete</Button>
-                  <Button variant="outlined" onClick={()=>handleClickViewBtn(item.experimentName)}>view</Button>
+                  <Button variant="outlined" onClick={() => handleClickViewBtn(item.experimentName)}>view</Button>
               </TableCell>
             </TableRow>
           ))}

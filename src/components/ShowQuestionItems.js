@@ -1,19 +1,22 @@
 import React from 'react'
-import {RadioGroup,FormControlLabel,Radio} from '@mui/material';
+import {RadioGroup,FormControlLabel,Radio, TextField} from '@mui/material';
 
 export default function ShowQuestionItems({
   question, 
   onChange
 }) {
   
-  const typeSwitch = (questionType,questionOption) =>{
+  const typeSwitch = (questionType,questionOption,questionName) =>{
 
     switch (questionType) {     
       case "singleLine":
-        return <input onChange={(e) => onChange(e.target.value)}></input>;
+        
+        return questionName === "Phone" 
+        ? <TextField type="number" onChange={(e) => onChange(e.target.value)}></TextField> 
+        : <TextField onChange={(e) => onChange(e.target.value)}></TextField>;
     
       case "multiLine":
-        return <textarea onChange={(e) => onChange(e.target.value)}></textarea>;
+        return <TextField multiline onChange={(e) => onChange(e.target.value)}></TextField>;
       
       case "MCQ":
         return (
@@ -37,7 +40,7 @@ export default function ShowQuestionItems({
     <div>
       <h1>{question.questionName}</h1>
       
-      {typeSwitch(question.questionType,question.questionOptions)}
+      {typeSwitch(question.questionType,question.questionOptions,question.questionName)}
     </div>
   )
 }
