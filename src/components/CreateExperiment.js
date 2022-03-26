@@ -4,6 +4,7 @@ import { Button, Typography } from '@material-ui/core';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {createExperiment} from "../api/index.js"
 
 export default function CreateExperiment() {
     const defaultType = "singleLine";
@@ -12,6 +13,8 @@ export default function CreateExperiment() {
          questionType: defaultType,
          questionOptions: ["",""]}
     ]);
+
+    const [experName, setExperName] = useState ("")
 
     const handleRadioChange = (e,index) => {
         let list = [...questionList];
@@ -60,14 +63,22 @@ export default function CreateExperiment() {
     }
 
     const handleSubmit = () => {
+        const experiment = {
+            experimentName:experName,
+            questions: questionList
+        };
+        createExperiment(experiment);
+    }
 
+    const hanldeExperNameChange = (event) => {
+        setExperName(event.target.value)
     }
 
   return (
     <div>
         
         <Typography variant="h4">Experiment Name:</Typography>
-        <TextField id="outlined-experienmentName" label="Experiment Name" variant="outlined" />
+        <TextField id="outlined-experienmentName" label="Experiment Name" variant="outlined" value={experName} onChange ={(event) => hanldeExperNameChange(event)}/>
         <Button variant="contained" onClick={handleAddQuestion}> Add Question</Button>
         <div id = "questionSection">
             {questionList.map((question,index) => (

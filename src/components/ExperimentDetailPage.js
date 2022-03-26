@@ -1,35 +1,34 @@
-import React from 'react'
-import ShowQuestionItems from './ShowQuestionItems'
+import React, { useEffect,useState } from 'react';
+import { useParams } from 'react-router-dom';
+import ShowQuestionItems from './ShowQuestionItems';
+import {fetchExperimentByName} from '../api/index.js';
+import { Button } from '@mui/material';
 
 export default function ExperimentDetailPage() {
 
-    const mockData = {
-        id: "1",
-        experimentName: "Experiment A",
-        questions: [{
-          question_id: "1",
-          question_type: "singleLine",
-          question_name: "Name:",
-          question_options: []
-        },{
-          question_id: "2",
-          question_type: "multiLine",
-          question_name: "Skills:",
-          question_options: []
-        },{
-          question_id: "3",
-          question_type: "mcq",
-          question_name: "Gender:",
-          question_options: ['F','M','Other']
-        }]
+  const {name} = useParams();
+  const [experiment, setExperiment] = useState({});
+
+  const getData = async (name) => {
+    const data = await fetchExperimentByName(name);
+    if (data.status === 200){
+      setExperiment(data.data);
     }
+  }
+
+  useEffect(() => {
+    console.log('name',name)
+    getData(name);
+  },[]);
+
   return (
     <div>
-      <h1>{mockData.experimentName}</h1>
+      {Object.keys(experiment).length !== 0 &&
       <div>
-
-          {mockData.questions.map((question,index) => (
-            <div>
+      <h1>{experiment.experimentName}</h1>
+       <div>
+          {experiment.questions.map((question,index) => (
+            <div key={index}>
               <ShowQuestionItems 
                 question={question}
               />
@@ -38,9 +37,12 @@ export default function ExperimentDetailPage() {
             </div>
           ))}
 
-          <button>click me</button>
+      <Button variant="outlined">Submit</Button>
+      <Button variant="outlined">Back</Button>
 
       </div>
+      </div>
+    }
     </div>
   )
 }

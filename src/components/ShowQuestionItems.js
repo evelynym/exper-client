@@ -1,4 +1,5 @@
 import React from 'react'
+import {RadioGroup,FormControlLabel,Radio} from '@mui/material';
 
 export default function ShowQuestionItems({question}) {
   
@@ -12,26 +13,31 @@ export default function ShowQuestionItems({question}) {
       case "multiLine":
         return <textarea></textarea>;
       
-      case "mcq":
-        return (<select>
-                {questionOption.length > 0 &&
-                questionOption.map((option,index) => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>);
+      case "MCQ":
+        return (
+          <RadioGroup
+            row
+            name="radio-buttons-group"
+          >
+            {questionOption.length > 0 &&
+            questionOption.map((option,index) => (
+              
+                
+                <FormControlLabel key = {index} value={option} control={<Radio />} label={option} />
+            
+            ))}
+          </RadioGroup>
+              );
       default:
         return <div>single</div>;
     }
   };
-  
 
   return (
     <div>
-      <h1>QuestionsForItem</h1>
+      <h1>{question.questionName}</h1>
       
-      {question.question_name}
-
-      {typeSwitch(question.question_type,question.question_options)}
+      {typeSwitch(question.questionType,question.questionOptions)}
     </div>
   )
 }
