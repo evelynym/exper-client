@@ -5,9 +5,8 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Alert,Snackbar} from '@mui/material';
-import {createExperiment} from "../api/index.js"
+import {createExperiment,isExistsExperimentByName} from "../api/index.js"
 import { useNavigate } from 'react-router-dom';
-
 
 export default function CreateExperiment() {
     const defaultType = "singleLine";
@@ -68,6 +67,9 @@ export default function CreateExperiment() {
     }
 
     const handleSubmit = async () => {
+       // const data = await isExistsExperimentByName(experName);
+    //    isExistsExperimentByName(experName)
+    //    .then(async(data) => {
         if (experName === "") {
             setShowAlert({isOpen:true,type:"warning",message:"Experiment name is mandatory!"});
         }
@@ -75,22 +77,28 @@ export default function CreateExperiment() {
             question.questionName === "" || 
             (question.questionType === "MCQ" && question.questionOptions.length === 0)).length > 0){
                 setShowAlert({isOpen:true,type:"warning",message:"All fields are mandatory!"});
-        }
+        } 
         else{
             const experiment = {
                 experimentName:experName,
                 questions: questionList
             };
     
-            const data = await createExperiment(experiment);
-            if(data.status === 201) {
+            createExperiment(experiment)
+            .then(data => {
                 setShowAlert({isOpen: true, message: "Create successfully",type:"success"})
                 navigate('/');
-            }
+            })
+           .catch(error => {
+               console.log(error)
+                setShowAlert({isOpen: true, message: "Experiment should be unique.",type:"warning"});
+           });
         }
-
-      
-
+    //    })
+    //    .catch(error => {
+    //        console.log(error);
+    //        setShowAlert({isOpen: true, message: "Experiment should be unique.",type:"warning"})
+    //    })
     }
 
     const handleAlertClose = (event, reason) => {

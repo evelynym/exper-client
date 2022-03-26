@@ -25,15 +25,17 @@ export default function ExperimentDetailPage() {
     getData(name);
   },[]);
 
-  const handleSubmitAns = () => {
+  const handleSubmitAns = async () => {
 
     // check if all questions are answered
 
     console.log(answers,experiment.questions.length)
+    
     if (answers.length !== experiment.questions.length){
       
       setShowAlert({isOpen: true, message: "All questions are mandatory",type:"warning"})
     }
+    
     else {
       setShowAlert({isOpen:false,message:"",type:""});
       setShowThankYou(true);

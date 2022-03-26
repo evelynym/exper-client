@@ -17,6 +17,9 @@ export const deleteExperimentById = (_id) => {
 export const fetchExperimentByName = (name) => {
     return axios.get(`${url}/experiments/fetchExperimentByName/${name}`);
 }
+export const isExistsExperimentByName = (name) => {
+    return axios.get(`${url}/experiments/isExistsExperimentByName/${name}`);
+}
 
 export const submitAns = (newAns) => {
     return axios.post(`${url}/answers/submitAns`,newAns)
