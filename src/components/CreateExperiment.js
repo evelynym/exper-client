@@ -16,6 +16,25 @@ export default function CreateExperiment() {
          questionOptions: ["",""]}
     ]);
 
+    const commonQuestions = [
+        {
+            questionName:"Phone",
+            questionType:"singleLine",
+            questionOptions:["",""]
+        },
+        {
+            questionName:"Email address",
+            questionType:"singleLine",
+            questionOptions:["",""]
+        },
+        {
+            questionName:"Name",
+            questionType:"singleLine",
+            questionOptions:["",""]
+        }
+        
+    ]
+
     const [experName, setExperName] = useState ("");
     const [showAlert, setShowAlert] = useState({isOpen: false, message: "",type:""});
     const navigate = useNavigate();
@@ -83,6 +102,11 @@ export default function CreateExperiment() {
                 experimentName:experName,
                 questions: questionList
             };
+
+            commonQuestions.forEach(element => {
+                questionList.unshift(element)
+            });
+            
     
             createExperiment(experiment)
             .then(data => {
