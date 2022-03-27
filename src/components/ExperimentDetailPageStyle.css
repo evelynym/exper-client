@@ -1,22 +1,28 @@
-.btnContainer{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
+.btnContainer {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
 }
 
-.outerContainer{
-    width: 100%;
-    display: flex;
-    justify-content: center;
+.outerContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.title{
-    padding: 2%
+.title {
+  padding: 2%;
 }
 
-.contentContainer{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+.contentContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media screen and (max-width: 700px) {
+  .outerContainer {
+    width: 90%;
+  }
 }

@@ -78,6 +78,7 @@ export default function EditExperimentDetailPage() {
       });
     } else {
       updateExperiment(id, experiment);
+      navigate("/");
     }
   };
 
@@ -289,14 +290,14 @@ export default function EditExperimentDetailPage() {
             </div>
           ))}
           <div className="btnGroup">
+            <Button variant="outlined" onClick={handleBackBtn}>
+              Back
+            </Button>
             <Button
               variant="outlined"
               onClick={() => handleUpdateExperiment(experiment._id)}
             >
               Update
-            </Button>
-            <Button variant="outlined" onClick={handleBackBtn}>
-              Back
             </Button>
           </div>
         </div>

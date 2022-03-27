@@ -162,14 +162,14 @@ export default function ExperimentDetailPage() {
 
                 <div className="outerContainer">
                   <div className="btnContainer">
+                    <Button variant="outlined" onClick={handleBackBtn}>
+                      Back
+                    </Button>
                     <Button
                       variant="outlined"
                       onClick={() => handleSubmitAns()}
                     >
                       Submit
-                    </Button>
-                    <Button variant="outlined" onClick={handleBackBtn}>
-                      Back
                     </Button>
                   </div>
                 </div>
