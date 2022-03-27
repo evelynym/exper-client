@@ -23,9 +23,9 @@
 }
 
 body {
-  min-width: 1000px; /* Suppose you want minimum width of 1000px */
+  min-width: 390px; /* Suppose you want minimum width of 500px */
   width: auto !important; /* Firefox will set width as auto */
-  width: 1000px; /* As IE6 ignores !important it will set width as 1000px; */
+  width: 390px; /* As IE6 ignores !important it will set width as 500px; */
 }
 
 .headerBtn {
