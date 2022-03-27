@@ -50,7 +50,6 @@ export default function HomePage() {
         message: "Delete successfully",
         type: "success",
       });
-      // alert("Your file is being uploaded!")
       getData();
     } else if (data.status === 409) {
       <Alert variant="filled" severity="error">
@@ -94,13 +93,14 @@ export default function HomePage() {
               </TableRow>
             </TableHead>
             <TableBody>
+              {/** make sure data is loaded*/}
               {experimentList &&
                 experimentList.map((item, index) => (
                   <TableRow
                     key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell align="center">{index}</TableCell>
+                    <TableCell align="center">{index + 1}</TableCell>
                     <TableCell align="center">{item.experimentName}</TableCell>
                     <TableCell align="center">
                       <Button

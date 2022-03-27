@@ -17,9 +17,10 @@ export default function ExperimentDetailPage() {
   const [showAlert, setShowAlert] = useState({
     isOpen: false,
     message: "",
-    type: "",
+    type: "warning",
   });
 
+  // Email & name input validation
   const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
   const regName = /^[A-Za-z][A-Za-z\'\-]+([\ A-Za-z][A-Za-z\'\-]+)*/;
 
@@ -30,10 +31,19 @@ export default function ExperimentDetailPage() {
     }
   };
 
+  /**
+   * Fetch experiment data on page load
+   */
   useEffect(() => {
     getData(name);
   }, []);
 
+  /**
+   * Handle submit ans
+   * check if name is valid
+   * check if email is valid
+   * check if answer length does match question length
+   */
   const handleSubmitAns = async () => {
     if (
       answers.filter(
@@ -58,7 +68,7 @@ export default function ExperimentDetailPage() {
         type: "warning",
       });
     } else {
-      setShowAlert({ isOpen: false, message: "", type: "" });
+      setShowAlert({ isOpen: false, message: "", type: "warning" });
       setShowThankYou(true);
       const ansToSubmit = {
         experimentName: experiment.experimentName,
@@ -68,8 +78,15 @@ export default function ExperimentDetailPage() {
     }
   };
 
-  // IF --> if filter length > 0 --> already add to questionlist --> update
-  // Else --> not exists in the questionlist --> insert
+  /**
+   * handle answer change
+   * check if filter length > 0
+   * YES--> already add to questionlist --> update
+   * NO --> not exists in the questionlist --> insert
+   * @param {*} questionAnswerFromChild
+   * @param {*} questionName
+   * @param {*} questionId
+   */
   const handleAnswerChange = (
     questionAnswerFromChild,
     questionName,
@@ -93,8 +110,7 @@ export default function ExperimentDetailPage() {
     if (reason === "clickaway") {
       return;
     }
-
-    setShowAlert({ isOpen: false, type: "", message: "" });
+    setShowAlert({ isOpen: false, type: "warning", message: "" });
   };
 
   const handleBackBtn = () => {
@@ -120,6 +136,8 @@ export default function ExperimentDetailPage() {
               {showAlert.message}
             </Alert>
           </Snackbar>
+
+          {/* Object.keys(experiment).length !== 0  make sure data is loaded*/}
           {Object.keys(experiment).length !== 0 && (
             <div>
               <div className="outerContainer title">
@@ -129,7 +147,6 @@ export default function ExperimentDetailPage() {
               </div>
               <div className="contentContainer">
                 {experiment.questions.map((question, index) => (
-                  // <div key={index}>
                   <ShowQuestionItems
                     question={question}
                     questionIndex={index}
@@ -141,8 +158,6 @@ export default function ExperimentDetailPage() {
                       )
                     }
                   />
-
-                  // </div>
                 ))}
 
                 <div className="outerContainer">

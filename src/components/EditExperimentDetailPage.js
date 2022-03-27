@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   Radio,
   Typography,
-  List,
   Card,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -26,7 +25,7 @@ export default function EditExperimentDetailPage() {
   const [showAlert, setShowAlert] = useState({
     isOpen: false,
     message: "",
-    type: "",
+    type: "warning",
   });
   const defaultType = "singleLine";
   const navigate = useNavigate();
@@ -46,9 +45,17 @@ export default function EditExperimentDetailPage() {
     if (reason === "clickaway") {
       return;
     }
-    setShowAlert({ isOpen: false, type: "", message: "" });
+    setShowAlert({ isOpen: false, type: "warning", message: "" });
   };
 
+  /**
+   * Handle Update experiment
+   *
+   * check if the experiment is empty
+   * check if the question and question options are empty
+   *
+   * @param {*} id
+   */
   const handleUpdateExperiment = (id) => {
     if (experiment.experimentName === "") {
       setShowAlert({
@@ -187,7 +194,8 @@ export default function EditExperimentDetailPage() {
                         handleRadioChange(event, questionIndex)
                       }
                       row
-                      defaultValue={question.questionType}
+                      defaultValue=""
+                      value={question.questionType}
                     >
                       <FormControlLabel
                         value="singleLine"

@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import TextField from "@material-ui/core/TextField";
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -22,9 +22,16 @@ export default function CreateExperiment() {
   const [showAlert, setShowAlert] = useState({
     isOpen: false,
     message: "",
-    type: "",
+    type: "warning",
   });
   const navigate = useNavigate();
+
+  /**
+   * Set questionType according to choice
+   * If question type is not MCQ give the defaull value
+   * @param {*} e
+   * @param {*} index
+   */
 
   const handleRadioChange = (e, index) => {
     let list = [...questionList];
@@ -35,6 +42,10 @@ export default function CreateExperiment() {
     setQuestionList(list);
   };
 
+  /**
+   * Remove question According to question index
+   * @param {*} index
+   */
   const handleRemoveQuestion = (index) => {
     const list = [...questionList];
     list.splice(index, 1);
@@ -65,6 +76,13 @@ export default function CreateExperiment() {
     setQuestionList(list);
   };
 
+  /**
+   * Handle Delete Option
+   *
+   * at least two options should be provided
+   * @param {*} optionIndex
+   * @param {*} questionIndex
+   */
   const handleDeleteOption = (optionIndex, questionIndex) => {
     const list = [...questionList];
     if (list[questionIndex]["questionOptions"].length > 2)
@@ -78,6 +96,13 @@ export default function CreateExperiment() {
     setQuestionList(list);
   };
 
+  /**
+   * Handle Submit.
+   * Checks if name is empty
+   * Checks if any field is left empty
+   *
+   * show alert if name is already taken
+   */
   const handleSubmit = async () => {
     if (experName === "") {
       setShowAlert({
@@ -114,7 +139,6 @@ export default function CreateExperiment() {
           navigate("/");
         })
         .catch((error) => {
-          console.log(error);
           setShowAlert({
             isOpen: true,
             message: "Experiment should be unique.",
@@ -128,8 +152,7 @@ export default function CreateExperiment() {
     if (reason === "clickaway") {
       return;
     }
-
-    setShowAlert({ isOpen: false, type: "", message: "" });
+    setShowAlert({ isOpen: false, type: "warning", message: "" });
   };
 
   const hanldeExperNameChange = (event) => {
@@ -173,7 +196,7 @@ export default function CreateExperiment() {
                     variant="standard"
                     value={question.questionName}
                     onChange={(e) => handleQuestionNameChange(e, index)}
-                  ></TextField>
+                  />
                   <RadioGroup
                     row
                     name={index.toString()}
@@ -252,6 +275,10 @@ export default function CreateExperiment() {
               </div>
             ))}
           </div>
+          <Typography variant="body2">
+            * Common questions are automatically added on Creation. No need to
+            manually add them!
+          </Typography>
           <Button
             variant="outlined"
             className="submitBtn"

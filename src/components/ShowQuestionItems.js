@@ -5,11 +5,7 @@ import {
   Radio,
   TextField,
   Typography,
-  Grid,
-  Paper,
-  Box,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import "./ShowQuestionItemsStyle.css";
 
 export default function ShowQuestionItems({
@@ -64,14 +60,6 @@ export default function ShowQuestionItems({
         return <div>single</div>;
     }
   };
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
 
   return (
     <div className="questionContainer">

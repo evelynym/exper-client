@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Typography } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
 import "./HeaderStyle.css";
 
 export default function Header() {
@@ -26,7 +27,12 @@ export default function Header() {
       </div>
 
       {location.pathname !== "/createNewExperiment" && (
-        <Button className="width" variant="standard" onClick={handleAddBtn}>
+        <Button
+          className="width headerBtn"
+          variant="standard"
+          startIcon={<AddIcon />}
+          onClick={handleAddBtn}
+        >
           Add new
         </Button>
       )}
