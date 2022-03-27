@@ -2,10 +2,11 @@ import React, { useEffect,useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ShowQuestionItems from './ShowQuestionItems';
 import {fetchExperimentByName} from '../api/index.js';
-import { Button,Alert, Snackbar} from '@mui/material';
+import { Button,Alert, Snackbar, Typography} from '@mui/material';
 import { submitAns } from '../api/index.js';
 import ThankYouPage from './ThankYouPage.js';
 import { useNavigate } from 'react-router-dom';
+import './ExperimentDetailPageStyle.css';
 
 export default function ExperimentDetailPage() {
 
@@ -109,24 +110,30 @@ export default function ExperimentDetailPage() {
         </Snackbar>
       {Object.keys(experiment).length !== 0 &&
       <div>
-      <h1>{experiment.experimentName}</h1>
-       <div>
-          {experiment.questions.map((question,index) => (
-            <div key={index}>
-              <ShowQuestionItems 
-                question={question}
-                onChange = {(answer) => handleAnswerChange(answer,question.questionName,question._id)}
-              />
-              
-              
+        <div className='outerContainer title'>
+            <Typography variant="h3" >{experiment.experimentName}</Typography>
+        </div>
+        <div className='contentContainer'>
+            {experiment.questions.map((question,index) => (
+                // <div key={index}>
+                <ShowQuestionItems 
+                    question={question}
+                    questionIndex = {index}
+                    onChange = {(answer) => handleAnswerChange(answer,question.questionName,question._id)}
+                />
+                
+                
+                // </div>
+            ))}
+
+        
+            <div className='outerContainer'>
+            <div  className='btnContainer'>
+                <Button variant="outlined" onClick={() => handleSubmitAns()}>Submit</Button>
+                <Button variant="outlined" onClick={handleBackBtn}>Back</Button>
             </div>
-          ))}
-
-      
-      <Button variant="outlined" onClick={() => handleSubmitAns()}>Submit</Button>
-      <Button variant="outlined" onClick={handleBackBtn}>Back</Button>
-
-      </div>
+            </div>
+        </div>
       </div>
     }
     </div>)
