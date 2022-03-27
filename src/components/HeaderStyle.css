@@ -1,0 +1,29 @@
+.navbar-container {
+  z-index: 100;
+  top: 0;
+  left: 0;
+  padding: 1rem auto;
+  background-color: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  padding: 3%;
+  align-items: center;
+}
+
+.headerTitle {
+  color: gray;
+  text-align: end;
+  margin-right: 0 !important;
+}
+
+@media screen and (max-width: 600px) {
+  #main-img {
+    content: url("https://assets-global.website-files.com/613866b997a5596e75141c49/615535cb69663572f781bcd6_dst-symbol-orange.svg");
+  }
+}
+
+body {
+  min-width: 1000px; /* Suppose you want minimum width of 1000px */
+  width: auto !important; /* Firefox will set width as auto */
+  width: 1000px; /* As IE6 ignores !important it will set width as 1000px; */
+}

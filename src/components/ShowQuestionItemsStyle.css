@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  /* align-content: space-around;
+    flex-wrap: wrap; */
+}
+
+.nameContainer {
+  display: flex;
+  justify-content: start;
+  width: 100%;
+}
+
+.inputContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.questionContainer {
+  padding: 2%;
+  width: 50%;
+}
+
+@media screen and (max-width: 600px) {
+  .questionContainer {
+    padding: 2%;
+    width: 90%;
+  }
+}
+
+.input {
+  width: 100%;
+}
