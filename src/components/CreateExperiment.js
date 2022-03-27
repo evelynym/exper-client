@@ -5,7 +5,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Alert, Card, Snackbar, Tooltip } from "@mui/material";
-import { createExperiment, isExistsExperimentByName } from "../api/index.js";
+import { createExperiment } from "../api/index.js";
 import { useNavigate } from "react-router-dom";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -17,24 +17,6 @@ export default function CreateExperiment() {
   const [questionList, setQuestionList] = useState([
     { questionName: "", questionType: defaultType, questionOptions: ["", ""] },
   ]);
-
-  const commonQuestions = [
-    {
-      questionName: "Phone",
-      questionType: "singleLine",
-      questionOptions: ["", ""],
-    },
-    {
-      questionName: "Email address",
-      questionType: "singleLine",
-      questionOptions: ["", ""],
-    },
-    {
-      questionName: "Name",
-      questionType: "singleLine",
-      questionOptions: ["", ""],
-    },
-  ];
 
   const [experName, setExperName] = useState("");
   const [showAlert, setShowAlert] = useState({
@@ -94,13 +76,9 @@ export default function CreateExperiment() {
     const list = [...questionList];
     list[questionIndex]["questionOptions"][optionIndex] = e.target.value;
     setQuestionList(list);
-    console.log(questionList);
   };
 
   const handleSubmit = async () => {
-    // const data = await isExistsExperimentByName(experName);
-    //    isExistsExperimentByName(experName)
-    //    .then(async(data) => {
     if (experName === "") {
       setShowAlert({
         isOpen: true,
@@ -112,7 +90,7 @@ export default function CreateExperiment() {
         (question) =>
           question.questionName === "" ||
           (question.questionType === "MCQ" &&
-            question.questionOptions.length === 0)
+            question.questionOptions.filter((opt) => opt === "").length > 0)
       ).length > 0
     ) {
       setShowAlert({
@@ -125,10 +103,6 @@ export default function CreateExperiment() {
         experimentName: experName,
         questions: questionList,
       };
-
-      commonQuestions.forEach((element) => {
-        questionList.unshift(element);
-      });
 
       createExperiment(experiment)
         .then((data) => {
@@ -148,11 +122,6 @@ export default function CreateExperiment() {
           });
         });
     }
-    //    })
-    //    .catch(error => {
-    //        console.log(error);
-    //        setShowAlert({isOpen: true, message: "Experiment should be unique.",type:"warning"})
-    //    })
   };
 
   const handleAlertClose = (event, reason) => {

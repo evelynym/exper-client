@@ -10,10 +10,14 @@ import {
   Radio,
   Typography,
   List,
+  Card,
 } from "@mui/material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddIcon from "@mui/icons-material/Add";
 import { fetchExperimentByName } from "../api/index.js";
 import { useNavigate } from "react-router-dom";
 import { updateExperiment } from "../api/index.js";
+import "./EditExperimentDetailPageStyle.css";
 
 export default function EditExperimentDetailPage() {
   const { name } = useParams();
@@ -46,7 +50,28 @@ export default function EditExperimentDetailPage() {
   };
 
   const handleUpdateExperiment = (id) => {
-    updateExperiment(id, experiment);
+    if (experiment.experimentName === "") {
+      setShowAlert({
+        isOpen: true,
+        type: "warning",
+        message: "Experiment name is mandatory!",
+      });
+    } else if (
+      experiment.questions.filter(
+        (question) =>
+          question.questionName === "" ||
+          (question.questionType === "MCQ" &&
+            question.questionOptions.filter((opt) => opt === "").length > 0)
+      ).length > 0
+    ) {
+      setShowAlert({
+        isOpen: true,
+        type: "warning",
+        message: "All fields are mandatory!",
+      });
+    } else {
+      updateExperiment(id, experiment);
+    }
   };
 
   const handleBackBtn = () => {
@@ -104,9 +129,22 @@ export default function EditExperimentDetailPage() {
   };
 
   return (
-    <div>
+    <div className="flex">
+      <Snackbar
+        open={showAlert.isOpen}
+        autoHideDuration={3000}
+        onClose={handleAlertClose}
+      >
+        <Alert
+          severity={showAlert.type}
+          sx={{ width: "100%" }}
+          onClose={handleAlertClose}
+        >
+          {showAlert.message}
+        </Alert>
+      </Snackbar>
       {Object.keys(experiment).length !== 0 && (
-        <div>
+        <div className="inner">
           <Snackbar
             open={showAlert.isOpen}
             autoHideDuration={3000}
@@ -120,104 +158,139 @@ export default function EditExperimentDetailPage() {
               {showAlert.message}
             </Alert>
           </Snackbar>
-          <Typography>Experiment name</Typography>
+          <Typography variant="h5">Experiment name</Typography>
           <TextField
+            fullWidth
+            variant="standard"
             value={experiment.experimentName}
             onChange={(event) => handleExperimentNameChange(event)}
           ></TextField>
           {experiment.questions.map((question, questionIndex) => (
-            <div key={questionIndex}>
-              {console.log(experiment)}
-              <Typography>Question</Typography>
+            <div className="questionSection" key={questionIndex}>
+              <Card className="cardDisplay">
+                <Typography>Question {questionIndex + 1} :</Typography>
 
-              {question.questionName !== "Name" &&
-              question.questionName !== "Email address" &&
-              question.questionName !== "Phone" ? (
-                <div>
+                {question.questionName !== "Name" &&
+                question.questionName !== "Email address" &&
+                question.questionName !== "Phone" ? (
+                  <div>
+                    <TextField
+                      fullWidth
+                      variant="standard"
+                      value={question.questionName}
+                      onChange={(event) =>
+                        handleQuestionNameChange(event, questionIndex)
+                      }
+                    />
+                    <RadioGroup
+                      onChange={(event) =>
+                        handleRadioChange(event, questionIndex)
+                      }
+                      row
+                      defaultValue={question.questionType}
+                    >
+                      <FormControlLabel
+                        value="singleLine"
+                        control={<Radio />}
+                        label="Single-line text"
+                      />
+                      <FormControlLabel
+                        value="multiLine"
+                        control={<Radio />}
+                        label="Multi-line text"
+                      />
+                      <FormControlLabel
+                        value="MCQ"
+                        control={<Radio />}
+                        label="Multiple Choice"
+                      />
+                    </RadioGroup>
+                    {question.questionType === "MCQ" && (
+                      <>
+                        {question.questionOptions.map((option, optionIndex) => (
+                          <div key={optionIndex}>
+                            <Typography className="optionLabel" variant="body2">
+                              Option {optionIndex + 1} :
+                            </Typography>
+                            <TextField
+                              value={option}
+                              variant="standard"
+                              onChange={(event) =>
+                                handleOptTextChange(
+                                  event,
+                                  questionIndex,
+                                  optionIndex
+                                )
+                              }
+                            ></TextField>
+
+                            {question.questionOptions.length > 2 &&
+                              optionIndex > 1 && (
+                                <Button
+                                  startIcon={<DeleteOutlineIcon />}
+                                  onClick={() =>
+                                    handleDeletOptBtn(
+                                      optionIndex,
+                                      questionIndex
+                                    )
+                                  }
+                                ></Button>
+                              )}
+                            {question.questionOptions.length - 1 ===
+                              optionIndex && (
+                              <Button
+                                startIcon={<AddIcon />}
+                                onClick={() =>
+                                  handleAddOptBtn(optionIndex, questionIndex)
+                                }
+                              ></Button>
+                            )}
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    <Button
+                      className="btnAdd"
+                      variant="outlined"
+                      startIcon={<DeleteOutlineIcon />}
+                      onClick={() => hanldDeleteQuestionBtn(questionIndex)}
+                    >
+                      Delete question
+                    </Button>
+                  </div>
+                ) : (
                   <TextField
+                    fullWidth
+                    variant="standard"
                     value={question.questionName}
-                    onChange={(event) =>
-                      handleQuestionNameChange(event, questionIndex)
-                    }
+                    disabled
                   />
-                  <Button onClick={() => hanldDeleteQuestionBtn(questionIndex)}>
-                    Delete question
-                  </Button>
-                  <RadioGroup
-                    onChange={(event) =>
-                      handleRadioChange(event, questionIndex)
-                    }
-                    row
-                    defaultValue={question.questionType}
-                  >
-                    <FormControlLabel
-                      value="singleLine"
-                      control={<Radio />}
-                      label="Single-line text"
-                    />
-                    <FormControlLabel
-                      value="multiLine"
-                      control={<Radio />}
-                      label="Multi-line text"
-                    />
-                    <FormControlLabel
-                      value="MCQ"
-                      control={<Radio />}
-                      label="Multiple Choice"
-                    />
-                  </RadioGroup>
-                </div>
-              ) : (
-                <TextField value={question.questionName} disabled />
-              )}
+                )}
 
-              {console.log(question)}
-              {question.questionType === "MCQ" && (
-                <div>
-                  {question.questionOptions.map((option, optionIndex) => (
-                    <div key={optionIndex}>
-                      <TextField
-                        value={option}
-                        onChange={(event) =>
-                          handleOptTextChange(event, questionIndex, optionIndex)
-                        }
-                      ></TextField>
-                      {question.questionOptions.length > 2 && optionIndex > 1 && (
-                        <div>
-                          <Button
-                            onClick={() =>
-                              handleDeletOptBtn(optionIndex, questionIndex)
-                            }
-                          >
-                            Delete option
-                          </Button>
-                          <Button
-                            onClick={() =>
-                              handleAddOptBtn(optionIndex, questionIndex)
-                            }
-                          >
-                            Add option
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {experiment.questions.length - 1 === questionIndex && (
-                <Button onClick={handleAddQuestionBtn}>Add questions</Button>
-              )}
+                {experiment.questions.length - 1 === questionIndex && (
+                  <Button
+                    className="btnAdd"
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={handleAddQuestionBtn}
+                  >
+                    Add questions
+                  </Button>
+                )}
+              </Card>
             </div>
           ))}
-          <Button
-            variant="outlined"
-            onClick={() => handleUpdateExperiment(experiment._id)}
-          >
-            Update
-          </Button>
-          <Button variant="outlined" onClick={handleBackBtn}>
-            Back
-          </Button>
+          <div className="btnGroup">
+            <Button
+              variant="outlined"
+              onClick={() => handleUpdateExperiment(experiment._id)}
+            >
+              Update
+            </Button>
+            <Button variant="outlined" onClick={handleBackBtn}>
+              Back
+            </Button>
+          </div>
         </div>
       )}
     </div>

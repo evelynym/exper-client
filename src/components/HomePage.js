@@ -100,8 +100,6 @@ export default function HomePage() {
                     key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    {console.log(item)}
-
                     <TableCell align="center">{index}</TableCell>
                     <TableCell align="center">{item.experimentName}</TableCell>
                     <TableCell align="center">

@@ -1,0 +1,33 @@
+.flex {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inner {
+  width: 50%;
+}
+
+.optionLabel {
+  color: gray;
+}
+
+.questionSection {
+  margin-top: 5%;
+}
+
+.btnAdd {
+  margin-top: 2% !important;
+  width: 50%;
+}
+
+.btnGroup {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cardDisplay {
+  padding: 2%;
+  margin-bottom: 5%;
+}
