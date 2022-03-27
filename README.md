@@ -1,70 +1,121 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Experiment project
+This project allows for central management of all experiments. Users can CRUD experiments as well as submit their responses. Common questions are added to all experiments so that users do not need to retype them everytime they create a new experiment.
+## Authors
 
-## Available Scripts
+- [@Min Yang](https://github.com/evelynym)
 
-In the project directory, you can run:
 
-### `npm start`
+## How to Run
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Please follow the steps to  run this project
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- You need to pull from both client and server repository
+- Checkout to server folder and run npm i to install the dependencies
+```bash
+  npm i
+```
+- Checkout to client folder and run npm i to install the dependencies
+```bash
+  npm i
+```
+- Inside the server folder, start the backend by running
+```bash
+  npm start
+```
+- Inside the client folder and start the frontend by running
+```bash
+  npm start
+```
 
-### `npm test`
+## API Reference
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### Get all experiments
 
-### `npm run build`
+```http
+  GET /experiments
+```
+#### Create a new experiment
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```http
+  POST /experiments/createExperiment
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Get experiment by name
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```http
+  GET /experiments/fetchExperimentByName/${name}
+```
 
-### `npm run eject`
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `name`      | `string` | **Required**. Name of item to fetch |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### Update experiment by id
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```http
+  PATCH /experiments/updateExperiment/${_id}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `_id`      | `Objective` | **Required**. The Key of experiments. |
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+#### Delete an experiment by Id
+```http
+  Delete /experiments/delete/${_id}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `_id`      | `Objective` | **Required**. The Key of experiments |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Check if the experiment exists by name
+```http
+  GET /experiments/isExistsExperimentByName/${name}
+```
 
-### Code Splitting
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `name`      | `string` | **Required**. The name of the experiment. |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### Submit user response
+```http
+  POST /answers/submitAns
+```
 
-### Analyzing the Bundle Size
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `name`      | `string` | **Required**. The name of the experiment. |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Features
 
-### Advanced Configuration
+- A form page that displays the question set for the current experiment
+- pages to add and delete experiment
+- A page to edit the existing experiment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+## Tech Stack
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+**Client:** React
 
-### `npm run build` fails to minify
+**Server:** Node, Express
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Datebase:** MoogoDB
+
+
+## Assumptions
+- At least two options should be provided if the question type is multiple choice.
+- Disabling an experiment means deleting the experiment.
+- Experiment name should be unique.
+- All questions are mandatory to answer.
+- Only one answer can be selected from a list of options
+- Name, email address, and phone are single line type.
+- You don't need to add the comment questions in the create experiment page. (They will automatically be added on creation.)
+## Feedback
+
+If you have any feedback, please reach out to me at evelynym@outlook.com
+
